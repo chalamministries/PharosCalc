@@ -6,6 +6,7 @@ import { APP_CONFIG } from '../config';
 export default function Calculator() {
   const router = useRouter();
   const [display, setDisplay] = useState('0');
+  const [equation, setEquation] = useState('');
   const [currentValue, setCurrentValue] = useState('');
   const [operator, setOperator] = useState('');
   const [waitingForOperand, setWaitingForOperand] = useState(false);
