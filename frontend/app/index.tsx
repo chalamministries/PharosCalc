@@ -207,6 +207,12 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     padding: 24,
   },
+  equationText: {
+    color: '#666',
+    fontSize: 28,
+    fontWeight: '300',
+    marginBottom: 8,
+  },
   displayText: {
     color: '#fff',
     fontSize: 64,
