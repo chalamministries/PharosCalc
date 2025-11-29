@@ -33,6 +33,7 @@ export default function Calculator() {
 
     if (currentValue === '') {
       setCurrentValue(inputValue);
+      setEquation(`${inputValue} ${nextOperator}`);
     } else if (operator) {
       const currentVal = parseFloat(currentValue);
       const inputVal = parseFloat(inputValue);
@@ -55,6 +56,7 @@ export default function Calculator() {
 
       setDisplay(String(result));
       setCurrentValue(String(result));
+      setEquation(`${result} ${nextOperator}`);
     }
 
     setWaitingForOperand(true);
