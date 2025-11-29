@@ -44,16 +44,33 @@ export const APP_CONFIG = {
 
 1. User enters the **UNLOCK_CODE** (e.g., `742767`)
 2. User presses **+**
-3. User enters **any number** (e.g., `1234`)
+3. User enters **secondary code** (e.g., `1234`)
 4. User presses **=**
-5. App navigates to WebView with URL: `TARGET_URL?unlock=742767+1234`
+5. App calls your API: `TARGET_URL?unlock=742767+1234`
+6. **If API returns HTTP 200** with `{"URL": "https://..."}` → Opens WebView with that URL
+7. **If API returns any other status** (401, 403, etc.) → Shows normal math result
 
-### Example Flow
+### Example Flow - Success
 ```
 Calculator Input: 742767 + 1234 =
 ↓
-Opens WebView with URL:
-https://yourserver.com/unlock?unlock=742767+1234
+API Call: https://yourserver.com/api/unlock?unlock=742767+1234
+↓
+API Response (200): {"URL": "https://google.com"}
+↓
+Opens WebView → https://google.com
+```
+
+### Example Flow - Invalid Code
+```
+Calculator Input: 742767 + 9999 =
+↓
+API Call: https://yourserver.com/api/unlock?unlock=742767+9999
+↓
+API Response (401): {"detail": "Unauthorized"}
+↓
+Shows normal calculator result: 752766
+(User doesn't know there's a hidden feature!)
 ```
 
 ## Building the App
