@@ -155,27 +155,80 @@ yarn start
 
 ## Server-Side Implementation
 
-Your server should handle the unlock parameter:
+Your server MUST return the URL in the response. Here's how:
+
+### API Response Format
+
+**Success (HTTP 200):**
+```json
+{
+  "URL": "https://your-hidden-site.com/dashboard"
+}
+```
+
+**Failure (HTTP 401, 403, etc.):**
+```json
+{
+  "detail": "Unauthorized"
+}
+```
+
+### Example Implementation (Python/FastAPI)
+
+```python
+from fastapi import FastAPI, HTTPException
+
+app = FastAPI()
+
+@app.get("/api/unlock")
+async def unlock_endpoint(unlock: str):
+    # Parse equation: "742767+1234"
+    parts = unlock.split('+')
+    if len(parts) != 2:
+        raise HTTPException(status_code=401, detail="Invalid format")
+    
+    unlock_code = parts[0]  # "742767"
+    secondary_code = parts[1]  # "1234"
+    
+    # Validate codes
+    if unlock_code == "742767" and secondary_code == "1234":
+        # Valid! Return URL to open
+        return {"URL": "https://your-secret-site.com"}
+    
+    # Invalid code - return 401
+    # Calculator will show normal math result
+    raise HTTPException(status_code=401, detail="Unauthorized")
+```
+
+### Example Implementation (Node.js/Express)
 
 ```javascript
-// Example server endpoint
-app.get('/unlock', (req, res) => {
-  const equation = req.query.unlock; // e.g., "742767+1234"
+app.get('/api/unlock', (req, res) => {
+  const equation = req.query.unlock; // "742767+1234"
+  const [unlockCode, secondaryCode] = equation.split('+');
   
-  // Extract unlock code and additional data
-  const parts = equation.split('+');
-  const unlockCode = parts[0]; // "742767"
-  const additionalData = parts[1]; // "1234"
-  
-  // Validate unlock code
-  if (unlockCode === '742767') {
-    // Grant access, show hidden content
-    res.send('Welcome! Access granted.');
-  } else {
-    res.status(403).send('Access denied');
+  // Validate codes
+  if (unlockCode === '742767' && secondaryCode === '1234') {
+    // Valid - return 200 with URL
+    return res.status(200).json({
+      URL: 'https://your-secret-site.com'
+    });
   }
+  
+  // Invalid - return 401
+  // Calculator shows normal math result
+  return res.status(401).json({
+    detail: 'Unauthorized'
+  });
 });
 ```
+
+### Key Points
+- ✅ **Always return JSON** with `URL` field on success
+- ✅ **Return 200** only for valid codes
+- ✅ **Return 401/403** for invalid codes (calculator acts normal)
+- ✅ **URL can be dynamic** - return different URLs for different users
+- ✅ **Log attempts** - track who's trying to access
 
 ## Troubleshooting
 
