@@ -23,7 +23,7 @@ export const APP_CONFIG = {
 ```typescript
 export const APP_CONFIG = {
   UNLOCK_CODE: '999888',  // Your custom unlock code
-  TARGET_URL: 'https://myserver.com/secure',  // Your actual URL
+  TARGET_URL: 'https://myserver.com/api/unlock',  // Your API endpoint
 };
 ```
 
@@ -32,9 +32,29 @@ export const APP_CONFIG = {
 ```
 User enters: 999888 + 1234 =
               ^^^^^^   ^^^^
-           unlock code | any number
+           unlock code | secondary code
               
-App opens: https://myserver.com/secure?unlock=999888+1234
+App calls: https://myserver.com/api/unlock?unlock=999888+1234
+
+Your API returns:
+- 200 + {"URL": "https://..."} → Opens WebView
+- 401/403 → Shows normal calculator result (1001122)
+```
+
+### Step 4: Create Your API Endpoint
+
+Your server must return this format:
+
+**Success:**
+```json
+{
+  "URL": "https://your-hidden-site.com"
+}
+```
+
+**Failure (show normal calculator):**
+```
+HTTP 401 Unauthorized
 ```
 
 ## 📱 Building for Android
