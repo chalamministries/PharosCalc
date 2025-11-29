@@ -95,7 +95,8 @@ export default function Calculator() {
           setDisplay('...');
           const response = await fetch(`${APP_CONFIG.TARGET_URL}?unlock=${encodeURIComponent(equation)}`);
           
-          if (response.ok) {
+          // Only navigate if status is 200 and URL is provided
+          if (response.status === 200) {
             const data = await response.json();
             if (data.URL) {
               // Navigate to webview with the URL from API response
@@ -103,17 +104,27 @@ export default function Calculator() {
               return;
             }
           }
-          // If API call fails, just show the result
+          
+          // If status is not 200 (401, 403, etc.) or no URL, just show the math result
           setDisplay(String(result));
+          setEquation('');
+          setCurrentValue('');
+          setOperator('');
+          setWaitingForOperand(true);
         } catch (error) {
-          // On error, show the result
+          // On network error, just show the math result like normal calculator
           console.error('Unlock API error:', error);
           setDisplay(String(result));
+          setEquation('');
+          setCurrentValue('');
+          setOperator('');
+          setWaitingForOperand(true);
         }
         return;
       }
 
       setDisplay(String(result));
+      setEquation('');
       setCurrentValue('');
       setOperator('');
       setWaitingForOperand(true);
