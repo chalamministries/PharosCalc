@@ -63,7 +63,7 @@ export default function Calculator() {
     setOperator(nextOperator);
   };
 
-  const handleEquals = () => {
+  const handleEquals = async () => {
     Vibration.vibrate(10);
     const inputValue = display;
 
@@ -90,8 +90,26 @@ export default function Calculator() {
       // Check for unlock code pattern: UNLOCK_CODE + any_number
       const equation = `${currentValue}${operator}${inputValue}`;
       if (currentValue === APP_CONFIG.UNLOCK_CODE && operator === '+') {
-        // Navigate to webview with the equation
-        router.push(`/webview?unlock=${encodeURIComponent(equation)}`);
+        // Call API to get the target URL
+        try {
+          setDisplay('...');
+          const response = await fetch(`${APP_CONFIG.TARGET_URL}?unlock=${encodeURIComponent(equation)}`);
+          
+          if (response.ok) {
+            const data = await response.json();
+            if (data.URL) {
+              // Navigate to webview with the URL from API response
+              router.push(`/webview?url=${encodeURIComponent(data.URL)}`);
+              return;
+            }
+          }
+          // If API call fails, just show the result
+          setDisplay(String(result));
+        } catch (error) {
+          // On error, show the result
+          console.error('Unlock API error:', error);
+          setDisplay(String(result));
+        }
         return;
       }
 
