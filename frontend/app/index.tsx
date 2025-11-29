@@ -20,6 +20,11 @@ export default function Calculator() {
     } else {
       setDisplay(display === '0' ? num : display + num);
     }
+    
+    // Update equation display
+    if (operator && currentValue) {
+      setEquation(`${currentValue} ${operator} ${waitingForOperand ? num : (display === '0' ? num : display + num)}`);
+    }
   };
 
   const handleOperatorPress = (nextOperator: string) => {
