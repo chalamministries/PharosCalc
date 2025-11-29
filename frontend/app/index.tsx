@@ -105,6 +105,7 @@ export default function Calculator() {
   const handleClear = () => {
     Vibration.vibrate(10);
     setDisplay('0');
+    setEquation('');
     setCurrentValue('');
     setOperator('');
     setWaitingForOperand(false);
