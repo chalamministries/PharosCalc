@@ -1,7 +1,8 @@
-import { View, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, Platform, Text } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { useLocalSearchParams } from 'expo-router';
 import { APP_CONFIG } from '../config';
+import { useEffect } from 'react';
 
 export default function WebViewScreen() {
   const params = useLocalSearchParams();
@@ -10,6 +11,26 @@ export default function WebViewScreen() {
   // Construct the full URL with the unlock parameter
   const url = `${APP_CONFIG.TARGET_URL}?unlock=${unlockCode}`;
 
+  useEffect(() => {
+    // On web platform, open URL in same window
+    if (Platform.OS === 'web') {
+      window.location.href = url;
+    }
+  }, [url]);
+
+  // For web platform, show loading message while redirecting
+  if (Platform.OS === 'web') {
+    return (
+      <View style={styles.container}>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#ff9500" />
+          <Text style={styles.loadingText}>Redirecting...</Text>
+        </View>
+      </View>
+    );
+  }
+
+  // For mobile platforms (Android/iOS), use WebView
   return (
     <View style={styles.container}>
       <WebView
