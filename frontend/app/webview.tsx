@@ -6,14 +6,11 @@ import { useEffect } from 'react';
 
 export default function WebViewScreen() {
   const params = useLocalSearchParams();
-  const unlockCode = params.unlock as string;
-
-  // Construct the full URL with the unlock parameter
-  const url = `${APP_CONFIG.TARGET_URL}?unlock=${unlockCode}`;
+  const url = params.url as string;
 
   useEffect(() => {
     // On web platform, open URL in same window
-    if (Platform.OS === 'web') {
+    if (Platform.OS === 'web' && url) {
       window.location.href = url;
     }
   }, [url]);
