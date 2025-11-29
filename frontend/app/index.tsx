@@ -142,6 +142,11 @@ export default function Calculator() {
   return (
     <View style={styles.container}>
       <View style={styles.displayContainer}>
+        {equation !== '' && (
+          <Text style={styles.equationText} numberOfLines={1} adjustsFontSizeToFit>
+            {equation}
+          </Text>
+        )}
         <Text style={styles.displayText} numberOfLines={1} adjustsFontSizeToFit>
           {display}
         </Text>
