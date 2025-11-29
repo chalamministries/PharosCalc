@@ -73,4 +73,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#000',
   },
+  loadingText: {
+    color: '#fff',
+    fontSize: 18,
+    marginTop: 16,
+  },
 });
